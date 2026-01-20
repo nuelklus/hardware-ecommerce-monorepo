@@ -79,9 +79,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Middleware (stripped for 512MB RAM optimization)
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Always include in production
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # After SecurityMiddleware
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -128,6 +128,7 @@ USE_TZ = True  # Keep timezone support
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
+    'testserver',  # For testing
     os.getenv('RENDER_EXTERNAL_HOSTNAME', ''),
     '.onrender.com',
 ]

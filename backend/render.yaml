@@ -4,7 +4,7 @@ services:
     name: hardware-ecommerce-api
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput --clear
     startCommand: gunicorn hardware_api.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --max-requests 1000 --max-requests-jitter 50
     autoDeploy: true
     
@@ -16,6 +16,12 @@ services:
         value: 3.12.7
       - key: PORT
         value: 10000
+      - key: DJANGO_SECRET_KEY
+        value: your-secret-key-here-change-this
+      - key: DJANGO_DEBUG
+        value: false
+      - key: DJANGO_ALLOWED_HOSTS
+        value: .onrender.com
         
     # Health check
     healthCheckPath: /api/health/
