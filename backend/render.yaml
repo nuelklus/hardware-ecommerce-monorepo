@@ -22,14 +22,16 @@ services:
         value: false
       - key: DJANGO_ALLOWED_HOSTS
         value: .onrender.com
+      - key: STATIC_ROOT
+        value: /opt/render/project/src/staticfiles
         
     # Health check
     healthCheckPath: /api/health/
     healthCheckTimeout: 30
     
-    # Static files
-    staticPublishPath: staticfiles
-    staticPublishGlob: "**/*"
+    # Static files - Remove staticPublishPath to let WhiteNoise handle them
+    # staticPublishPath: staticfiles
+    # staticPublishGlob: "**/*"
     
     # Directories
     buildFilter:

@@ -77,6 +77,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # WhiteNoise configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# WhiteNoise settings for production
+WHITENOISE_ROOT = STATIC_ROOT
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = False  # Production: don't auto-refresh
+WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'xz']
+
 # Middleware (stripped for 512MB RAM optimization)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
