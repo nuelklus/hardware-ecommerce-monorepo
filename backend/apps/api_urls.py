@@ -1,0 +1,8 @@
+from django.urls import include, path
+
+urlpatterns = [
+    path("accounts/", include("apps.accounts.urls")),
+    path("shipping/", include("apps.shipping.urls")),
+    path("products/", include("apps.products.urls")),
+    path("orders/", include("apps.orders.urls")),
+]
