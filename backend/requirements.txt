@@ -1,3 +1,4 @@
+setuptools>=70.0.0
 # Core Django and DRF
 Django==5.0.7
 djangorestframework==3.15.2
