@@ -79,7 +79,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Middleware (stripped for 512MB RAM optimization)
 MIDDLEWARE = [
-    # WhiteNoise will be added dynamically if available
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Always include in production
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -90,13 +90,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Removed: django.middleware.gzip.GZipMiddleware (saves memory)
 ]
-
-# Add WhiteNoise middleware if available (for production)
-try:
-    import whitenoise.middleware
-    MIDDLEWARE.insert(0, 'whitenoise.middleware.WhiteNoiseMiddleware')
-except ImportError:
-    pass  # WhiteNoise not available, skip it
 
 # Templates (optimized)
 TEMPLATES = [
