@@ -148,8 +148,11 @@ ALLOWED_HOSTS = [
 ]
 
 # CORS (production)
+frontend_url = os.getenv('FRONTEND_URL', 'https://your-frontend-domain.onrender.com')
 CORS_ALLOWED_ORIGINS = [
-    'https://your-frontend-domain.onrender.com',
+    frontend_url,
+    'http://localhost:3000',  # For local development
+    'http://localhost:3001',
     'https://your-custom-domain.com',
 ]
 
