@@ -148,7 +148,7 @@ ALLOWED_HOSTS = [
 ]
 
 # CORS (production)
-frontend_url = os.getenv('FRONTEND_URL', 'https://your-frontend-domain.onrender.com')
+frontend_url = os.getenv('FRONTEND_URL', 'https://hardware-ecommerce-monorepo-2.onrender.com')
 CORS_ALLOWED_ORIGINS = [
     frontend_url,
     'http://localhost:3000',  # For local development
