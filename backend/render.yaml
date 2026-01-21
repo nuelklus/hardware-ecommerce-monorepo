@@ -4,7 +4,7 @@ services:
     name: hardware-ecommerce-api
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput --clear --verbosity=2
+    buildCommand: pip install -r requirements.txt && python collectstatic_render.py
     startCommand: gunicorn hardware_api.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --max-requests 1000 --max-requests-jitter 50
     autoDeploy: true
     
@@ -26,6 +26,8 @@ services:
         value: /opt/render/project/src/staticfiles
       - key: WHITENOISE_ROOT
         value: /opt/render/project/src/staticfiles
+      - key: WHITENOISE_AUTOREFRESH
+        value: false
         
     # Health check
     healthCheckPath: /api/health/
@@ -42,6 +44,7 @@ services:
         - apps/**
         - requirements.txt
         - manage.py
+        - collectstatic_render.py
       ignoredPaths:
         - frontend/**
         - media/**
