@@ -88,6 +88,8 @@ WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = False  # Production: don't auto-refresh
 WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'xz']
 WHITENOISE_MANIFEST_STRICT = False  # Allow missing files gracefully
+WHITENOISE_INDEX_FILE = False  # Don't serve index files automatically
+WHITENOISE_ALLOW_ALL_ORIGINS = False  # Security: don't allow all origins
 
 # Middleware (stripped for 512MB RAM optimization)
 MIDDLEWARE = [
