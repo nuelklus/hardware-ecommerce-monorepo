@@ -24,6 +24,11 @@ def main():
     print(f"STATICFILES_STORAGE: {settings.STATICFILES_STORAGE}")
     print(f"STATICFILES_DIRS: {settings.STATICFILES_DIRS}")
     
+    # Show expected Render path
+    render_static_root = "/opt/render/project/src/backend/staticfiles"
+    print(f"\nExpected Render STATIC_ROOT: {render_static_root}")
+    print(f"Current STATIC_ROOT: {settings.STATIC_ROOT}")
+    
     # WhiteNoise settings
     whitenoise_settings = [
         'WHITENOISE_ROOT',
@@ -72,6 +77,9 @@ def main():
             if full_path.exists():
                 size = full_path.stat().st_size
                 print(f"FOUND {file_path} ({size} bytes)")
+                # Also show expected Render path
+                render_path = f"{render_static_root}/{file_path}"
+                print(f"  Expected on Render: {render_path}")
             else:
                 print(f"MISSING {file_path}")
                 all_found = False
@@ -114,7 +122,8 @@ def main():
             print(f"  {item}")
         
         if all_found:
-            print("\nSUCCESS: All required files found and ready for WhiteNoise serving!")
+            print(f"\nSUCCESS: All required files found and ready for WhiteNoise serving!")
+            print(f"Files will be served from: {render_static_root}")
         else:
             print("\nERROR: Some files missing - check collection process!")
         

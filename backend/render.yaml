@@ -23,9 +23,9 @@ services:
       - key: DJANGO_ALLOWED_HOSTS
         value: .onrender.com
       - key: STATIC_ROOT
-        value: /opt/render/project/src/staticfiles
+        value: /opt/render/project/src/backend/staticfiles
       - key: WHITENOISE_ROOT
-        value: /opt/render/project/src/staticfiles
+        value: /opt/render/project/src/backend/staticfiles
       - key: WHITENOISE_AUTOREFRESH
         value: false
       - key: WHITENOISE_INDEX_FILE
