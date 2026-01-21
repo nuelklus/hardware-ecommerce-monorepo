@@ -4,7 +4,7 @@ services:
     name: hardware-ecommerce-api
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput --clear
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput --clear --verbosity=2
     startCommand: gunicorn hardware_api.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --max-requests 1000 --max-requests-jitter 50
     autoDeploy: true
     
@@ -24,14 +24,16 @@ services:
         value: .onrender.com
       - key: STATIC_ROOT
         value: /opt/render/project/src/staticfiles
+      - key: WHITENOISE_ROOT
+        value: /opt/render/project/src/staticfiles
         
     # Health check
     healthCheckPath: /api/health/
     healthCheckTimeout: 30
     
-    # Static files - Remove staticPublishPath to let WhiteNoise handle them
-    # staticPublishPath: staticfiles
-    # staticPublishGlob: "**/*"
+    # Static files - Let WhiteNoise handle them completely
+    # staticPublishPath: staticfiles  # Disabled - let WhiteNoise handle
+    # staticPublishGlob: "**/*"       # Disabled - let WhiteNoise handle
     
     # Directories
     buildFilter:

@@ -74,14 +74,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# WhiteNoise configuration
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Django 5.0.7 static files configuration
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# WhiteNoise configuration - Use simpler storage for Django 5.0.7
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # WhiteNoise settings for production
 WHITENOISE_ROOT = STATIC_ROOT
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = False  # Production: don't auto-refresh
 WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'xz']
+WHITENOISE_MANIFEST_STRICT = False  # Allow missing files gracefully
 
 # Middleware (stripped for 512MB RAM optimization)
 MIDDLEWARE = [
