@@ -3,7 +3,7 @@ import os
 import dj_database_url
 
 # Production settings
-DEBUG = False
+DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() in {'1', 'true', 'yes'}
 
 # Security
 SECURE_SSL_REDIRECT = True
@@ -94,7 +94,7 @@ WHITENOISE_ALLOW_ALL_ORIGINS = False  # Security: don't allow all origins
 # Middleware (stripped for 512MB RAM optimization)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # After SecurityMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Right after SecurityMiddleware
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
