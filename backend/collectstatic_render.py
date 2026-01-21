@@ -23,6 +23,7 @@ def main():
     print(f"STATIC_URL: {settings.STATIC_URL}")
     print(f"STATIC_ROOT: {settings.STATIC_ROOT}")
     print(f"STATICFILES_STORAGE: {settings.STATICFILES_STORAGE}")
+    print(f"STATICFILES_DIRS: {settings.STATICFILES_DIRS}")
     
     # Clear existing static files
     static_root = Path(settings.STATIC_ROOT)
@@ -34,10 +35,10 @@ def main():
     # Ensure static root directory exists
     static_root.mkdir(parents=True, exist_ok=True)
     
-    # Collect static files
+    # Collect static files with explicit post-processing
     print("Collecting static files...")
     try:
-        call_command('collectstatic', verbosity=2, interactive=False, clear=True)
+        call_command('collectstatic', verbosity=2, interactive=False, clear=True, post_process=True)
         print("Static files collected successfully!")
         
         # Verify key files exist
