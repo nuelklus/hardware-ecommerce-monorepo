@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { LoginForm } from '@/components/auth/LoginForm';
 import { Button } from '@/components/ui/button';
 
@@ -22,7 +23,9 @@ export default function LoginPage() {
         </div>
         
         <div className="bg-white py-8 px-6 shadow-lg rounded-lg">
-          <LoginForm />
+          <Suspense fallback={<div>Loading...</div>}>
+            <LoginForm />
+          </Suspense>
         </div>
         
         <div className="text-center">
