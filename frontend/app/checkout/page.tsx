@@ -26,7 +26,7 @@ import {
 
 export default function CheckoutPage() {
   const { items, total, itemCount, clearCart } = useCart();
-  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'card' | 'mobile'>('cod');
+  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'card' | 'mobile_money'>('cod');
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
   
@@ -372,8 +372,8 @@ export default function CheckoutPage() {
                     <input
                       type="radio"
                       name="payment"
-                      value="mobile"
-                      checked={paymentMethod === 'mobile'}
+                      value="mobile_money"
+                      checked={paymentMethod === 'mobile_money'}
                       onChange={(e) => setPaymentMethod(e.target.value as any)}
                       className="mr-3"
                     />
