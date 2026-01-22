@@ -355,7 +355,7 @@ export const Header: React.FC = () => {
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               
-              <CommandGroup heading="Categories">
+              {/* <CommandGroup heading="Categories">
                 {categories.slice(0, 5).map((category) => (
                   <CommandItem key={category} className="flex items-center">
                     <Wrench className="mr-2 h-4 w-4" />
@@ -365,9 +365,9 @@ export const Header: React.FC = () => {
                     </Badge>
                   </CommandItem>
                 ))}
-              </CommandGroup>
+              </CommandGroup> */}
               
-              <CommandGroup heading="Popular Brands">
+              {/* <CommandGroup heading="Popular Brands">
                 {brands.slice(0, 5).map((brand) => (
                   <CommandItem key={brand} className="flex items-center">
                     <Search className="mr-2 h-4 w-4" />
@@ -377,7 +377,7 @@ export const Header: React.FC = () => {
                     </Badge>
                   </CommandItem>
                 ))}
-              </CommandGroup>
+              </CommandGroup> */}
             </CommandList>
           </Command>
         </DialogContent>
