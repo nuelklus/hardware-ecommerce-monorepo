@@ -211,7 +211,7 @@ class ApiClient {
     }
   }
 
-  private async request<T>(
+  async request<T>(
     endpoint: string,
     options: AxiosRequestConfig = {}
   ): Promise<T> {
