@@ -33,7 +33,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
-import { categories, brands } from '@/lib/mockData';
 import HardwareNavigation from './HardwareNavigation';
 
 export const Header: React.FC = () => {
