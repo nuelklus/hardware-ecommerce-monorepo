@@ -51,7 +51,7 @@ export interface Order {
 
 export const ordersApi = {
   createOrder: async (orderData: CreateOrderRequest): Promise<Order> => {
-    const response = await apiClient.request('/orders/create/', {
+    const response = await apiClient.request<Order>('/orders/create/', {
       method: 'POST',
       data: orderData,
     });
@@ -59,14 +59,14 @@ export const ordersApi = {
   },
 
   getOrder: async (orderNumber: string): Promise<Order> => {
-    const response = await apiClient.request(`/orders/${orderNumber}/`, {
+    const response = await apiClient.request<Order>(`/orders/${orderNumber}/`, {
       method: 'GET',
     });
     return response;
   },
 
   getOrders: async (): Promise<Order[]> => {
-    const response = await apiClient.request('/orders/list/', {
+    const response = await apiClient.request<Order[]>('/orders/list/', {
       method: 'GET',
     });
     return response;
