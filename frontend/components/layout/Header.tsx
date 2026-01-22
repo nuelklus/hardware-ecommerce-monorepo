@@ -61,23 +61,8 @@ export const Header: React.FC = () => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Mock search results (replace with actual search later)
-  const searchResults = [
-    ...categories.slice(0, 3).map(category => ({
-      id: `cat-${category}`,
-      title: category,
-      description: 'Browse products in this category',
-      type: 'category',
-      icon: <Wrench className="h-4 w-4" />
-    })),
-    ...brands.slice(0, 3).map(brand => ({
-      id: `brand-${brand}`,
-      title: brand,
-      description: 'Products from this brand',
-      type: 'brand',
-      icon: <Search className="h-4 w-4" />
-    }))
-  ];
+  // Search results will be populated by actual search functionality
+  const searchResults: any[] = [];
 
   return (
     <>
