@@ -1,7 +1,7 @@
 // API configuration
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api'; // Updated to port 8080
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 // Simple cache implementation
 const cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
