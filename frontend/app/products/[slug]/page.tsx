@@ -69,7 +69,7 @@ export default function ProductDetailPage() {
         // Transform the similar products to match HardwareCard expectations
         const transformedProducts = products.map((product: any) => ({
           ...product,
-          image: product.image_url || product.primary_image?.image || '/api/placeholder/400/300',
+          image: product.image_url || product.primary_image?.image || 'https://via.placeholder.com/400x300/e5e7eb/6b7280?text=Product',
           price: parseFloat(product.price),
           originalPrice: product.compare_price ? parseFloat(product.compare_price) : undefined,
           category: product.category?.name || 'Unknown',

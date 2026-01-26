@@ -17,7 +17,7 @@ export const CartDebug: React.FC = () => {
     name: 'Test Product',
     slug: 'test-product',
     price: 100,
-    image: '/api/placeholder/400/300',
+    image: 'https://via.placeholder.com/400x300/e5e7eb/6b7280?text=Product',
     category: 'Test Category',
     brand: 'Test Brand',
     sku: 'TEST-001'

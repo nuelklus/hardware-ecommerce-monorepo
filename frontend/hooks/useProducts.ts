@@ -11,13 +11,13 @@ interface UseProductsOptions {
 // Memoized data transformation
 const transformProduct = (product: any) => {
   // Handle image_url from Django Product model
-  let imageUrl = '/api/placeholder/400/300'; // Default fallback
+  let imageUrl = 'https://via.placeholder.com/400x300/e5e7eb/6b7280?text=Product'; // Default fallback
   
   if (product.image_url) {
     // Check if it's a relative path (doesn't start with http)
     if (product.image_url.startsWith('/')) {
       // Prepend Django media URL for relative paths
-      imageUrl = `http://127.0.0.1:8000${product.image_url}`;
+      imageUrl = `https://hardware-ecommerce-monorepo.onrender.com${product.image_url}`;
     } else {
       // Use full URL as-is
       imageUrl = product.image_url;
@@ -146,7 +146,7 @@ export function useProduct(slug: string) {
       // Transform product data to match our frontend structure
       const transformedProduct = {
         ...data,
-        image: data.image_url || data.primary_image?.image || '/api/placeholder/400/300',
+        image: data.image_url || data.primary_image?.image || 'https://via.placeholder.com/400x300/e5e7eb/6b7280?text=Product',
         price: parseFloat(data.price),
         originalPrice: data.compare_price ? parseFloat(data.compare_price) : undefined,
         category: data.category?.name || 'Unknown',
