@@ -157,11 +157,11 @@ export default function HomePage() {
                     Shop Products
                   </Button>
                 </Link>
-                <Link href="/pro-contractor">
+                {/* <Link href="/pro-contractor">
                   <Button size="lg" variant="outline">
                     Pro Contractor Program
                   </Button>
-                </Link>
+                </Link> */}
               </div>
             </div>
             <div className="relative">
@@ -346,9 +346,9 @@ export default function HomePage() {
               <h4 className="font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/products" className="hover:text-white">Products</Link></li>
-                <li><Link href="/brands" className="hover:text-white">Brands</Link></li>
-                <li><Link href="/deals" className="hover:text-white">Deals</Link></li>
-                <li><Link href="/pro-contractor" className="hover:text-white">Pro Contractor</Link></li>
+                {/* <li><Link href="/brands" className="hover:text-white">Brands</Link></li> */}
+                {/* <li><Link href="/deals" className="hover:text-white">Deals</Link></li> */}
+                {/* <li><Link href="/pro-contractor" className="hover:text-white">Pro Contractor</Link></li> */}
               </ul>
             </div>
             <div>
