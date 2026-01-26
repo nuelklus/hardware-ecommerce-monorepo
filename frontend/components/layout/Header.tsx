@@ -301,11 +301,11 @@ export const Header: React.FC = () => {
                       Categories
                     </Button>
                   </Link>
-                  <Link href="/brands" onClick={() => setIsMobileMenuOpen(false)}>
+                  {/* <Link href="/brands" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       Brands
                     </Button>
-                  </Link>
+                  </Link> */}
                   
                   {isAuthenticated ? (
                     <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>

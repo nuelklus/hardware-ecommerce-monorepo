@@ -176,7 +176,7 @@ export const HardwareNavigation: React.FC = () => {
           </NavigationMenuContent>
         </NavigationMenuItem>
         
-        <NavigationMenuItem>
+        {/* <NavigationMenuItem>
           <NavigationMenuLink asChild>
             <Link
               href="/brands"
@@ -185,9 +185,9 @@ export const HardwareNavigation: React.FC = () => {
               Brands
             </Link>
           </NavigationMenuLink>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
         
-        <NavigationMenuItem>
+        {/* <NavigationMenuItem>
           <NavigationMenuLink asChild>
             <Link
               href="/deals"
@@ -196,9 +196,9 @@ export const HardwareNavigation: React.FC = () => {
               Deals
             </Link>
           </NavigationMenuLink>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
         
-        <NavigationMenuItem>
+        {/* <NavigationMenuItem>
           <NavigationMenuLink asChild>
             <Link
               href="/pro-contractor"
@@ -207,7 +207,7 @@ export const HardwareNavigation: React.FC = () => {
               Pro Contractor
             </Link>
           </NavigationMenuLink>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
       </NavigationMenuList>
     </NavigationMenu>
   );

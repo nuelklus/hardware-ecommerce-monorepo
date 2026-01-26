@@ -11,6 +11,7 @@ const nextConfig = {
       'localhost', // For local development
       '127.0.0.1', // For local development
       'xachljqxtnhnmbpcnymt.supabase.co', // Your Supabase project
+      'hardware-ecommerce-monorepo.onrender.com', // Your Render backend
     ],
     remotePatterns: [
       {
