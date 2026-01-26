@@ -13,12 +13,19 @@ const nextConfig = {
       'xachljqxtnhnmbpcnymt.supabase.co', // Your Supabase project
       'hardware-ecommerce-monorepo.onrender.com', // Your Render backend
     ],
+    unoptimized: false,
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'xachljqxtnhnmbpcnymt.supabase.co',
         port: '',
         pathname: '/storage/v1/object/public/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
+        port: '',
+        pathname: '/**',
       },
     ],
   },

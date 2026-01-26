@@ -419,6 +419,7 @@ export default function CheckoutPage() {
                           width={64}
                           height={64}
                           className="object-cover"
+                          unoptimized={item.image.includes('via.placeholder.com')}
                         />
                       </div>
                       <div className="flex-1 min-w-0">

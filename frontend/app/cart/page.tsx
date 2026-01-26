@@ -121,6 +121,7 @@ export default function CartPage() {
                           fill
                           className="object-cover"
                           sizes="96px"
+                          unoptimized={item.image.includes('via.placeholder.com')}
                         />
                       </div>
                     </div>

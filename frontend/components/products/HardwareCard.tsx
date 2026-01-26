@@ -125,6 +125,7 @@ export const HardwareCard: React.FC<HardwareCardProps> = ({
               className="object-cover group-hover:scale-105 transition-transform duration-200"
               onError={() => setImageError(true)}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              unoptimized={product.image.includes('via.placeholder.com')}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gray-100">

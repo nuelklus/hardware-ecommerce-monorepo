@@ -231,6 +231,7 @@ export default function ProductDetailPage() {
                 className="object-cover hover:scale-105 transition-transform duration-500"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
+                unoptimized={product.image.includes('via.placeholder.com')}
               />
               {product.stockStatus === 'low_stock' && (
                 <Badge className="absolute top-4 left-4 bg-yellow-500 text-white">
