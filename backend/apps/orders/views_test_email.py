@@ -1,4 +1,4 @@
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.core.mail import send_mail
@@ -7,6 +7,7 @@ from django.http import JsonResponse
 
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
+@authentication_classes([])  # Explicitly disable authentication
 def test_email(request):
     """Test email configuration endpoint"""
     print("📧 Testing email configuration...")
