@@ -49,6 +49,10 @@ class CreateOrderView(generics.CreateAPIView):
             print("⚠️ Please set EMAIL_HOST_PASSWORD environment variable")
             return
         
+        # Import here to avoid circular imports
+        from django.core.mail import get_connection
+        from django.core.mail.backends.console import EmailBackend as ConsoleEmailBackend
+        
         # Email to customer
         customer_subject = f"Order Confirmation - {order.order_number}"
         customer_message = render_to_string('emails/order_confirmation.html', {
@@ -59,6 +63,16 @@ class CreateOrderView(generics.CreateAPIView):
         
         print(f"📧 Sending customer email to {order.email}")
         try:
+            # Try to send with timeout protection
+            import signal
+            
+            def timeout_handler(signum, frame):
+                raise TimeoutError("SMTP connection timed out")
+            
+            # Set timeout for SMTP connection
+            signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(10)  # 10 second timeout
+            
             send_mail(
                 subject=customer_subject,
                 message='',  # HTML email, so plain text is empty
@@ -67,8 +81,32 @@ class CreateOrderView(generics.CreateAPIView):
                 html_message=customer_message,
                 fail_silently=True  # Don't raise exceptions
             )
+            
+            signal.alarm(0)  # Cancel timeout
             print(f"✅ Customer email sent successfully")
+            
+        except TimeoutError as e:
+            print(f"❌ SMTP connection timed out: {e}")
+            print("⚠️ Falling back to console email backend")
+            # Fallback to console email
+            try:
+                console_backend = ConsoleEmailBackend()
+                connection = console_backend.get_connection()
+                from django.core.mail import EmailMessage
+                email = EmailMessage(
+                    subject=customer_subject,
+                    body=customer_message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[order.email],
+                )
+                email.content_subtype = 'html'
+                connection.send_messages([email])
+                print(f"✅ Customer email logged to console")
+            except Exception as fallback_error:
+                print(f"❌ Console email also failed: {fallback_error}")
+                
         except Exception as e:
+            signal.alarm(0)  # Cancel timeout
             print(f"❌ Failed to send customer email: {e}")
             # Don't raise exception - continue with order creation
         
@@ -82,6 +120,10 @@ class CreateOrderView(generics.CreateAPIView):
         
         print(f"📧 Sending admin email to {settings.ADMIN_EMAIL}")
         try:
+            # Set timeout for SMTP connection
+            signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(10)  # 10 second timeout
+            
             send_mail(
                 subject=admin_subject,
                 message='',  # HTML email, so plain text is empty
@@ -90,8 +132,32 @@ class CreateOrderView(generics.CreateAPIView):
                 html_message=admin_message,
                 fail_silently=True  # Don't raise exceptions
             )
+            
+            signal.alarm(0)  # Cancel timeout
             print(f"✅ Admin email sent successfully")
+            
+        except TimeoutError as e:
+            print(f"❌ SMTP connection timed out: {e}")
+            print("⚠️ Falling back to console email backend")
+            # Fallback to console email
+            try:
+                console_backend = ConsoleEmailBackend()
+                connection = console_backend.get_connection()
+                from django.core.mail import EmailMessage
+                email = EmailMessage(
+                    subject=admin_subject,
+                    body=admin_message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[settings.ADMIN_EMAIL],
+                )
+                email.content_subtype = 'html'
+                connection.send_messages([email])
+                print(f"✅ Admin email logged to console")
+            except Exception as fallback_error:
+                print(f"❌ Console email also failed: {fallback_error}")
+                
         except Exception as e:
+            signal.alarm(0)  # Cancel timeout
             print(f"❌ Failed to send admin email: {e}")
             # Don't raise exception - continue with order creation
 
