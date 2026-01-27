@@ -124,20 +124,23 @@ TEMPLATES = [
 ]
 
 # Email (production ready with fallback)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', '465'))  # Try SSL port instead of TLS
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'False').lower() == 'true'  # Disable TLS for SSL
-EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'True').lower() == 'true'  # Enable SSL
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', os.getenv('EMAIL_HOST_USER', 'noreply@hardware-ecommerce.com'))
-ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', os.getenv('EMAIL_HOST_USER', 'admin@hardware-ecommerce.com'))
+# Use console backend on Render free plan due to SMTP blocking
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Fallback to console email if SMTP is not configured
-if not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
-    print("⚠️ SMTP credentials not configured, falling back to console email backend")
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# SMTP configuration (for when you upgrade to paid plan or different host)
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+# EMAIL_PORT = int(os.getenv('EMAIL_PORT', '465'))
+# EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'False').lower() == 'true'
+# EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'True').lower() == 'true'
+# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+# DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', os.getenv('EMAIL_HOST_USER', 'noreply@hardware-ecommerce.com'))
+# ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', os.getenv('EMAIL_HOST_USER', 'admin@hardware-ecommerce.com'))
+
+# Console email configuration
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@hardware-ecommerce.com')
+ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@hardware-ecommerce.com')
 
 # Performance optimizations
 CONN_MAX_AGE = 600  # Database connection pooling
