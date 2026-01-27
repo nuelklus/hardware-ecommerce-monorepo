@@ -3,8 +3,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.core.mail import send_mail
 from django.conf import settings
+from django.http import JsonResponse
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def test_email(request):
     """Test email configuration endpoint"""
@@ -14,6 +15,14 @@ def test_email(request):
     print(f"📧 Email port: {settings.EMAIL_PORT}")
     print(f"📧 Email user: {settings.EMAIL_HOST_USER}")
     print(f"📧 From email: {settings.DEFAULT_FROM_EMAIL}")
+    
+    config_info = {
+        'backend': str(settings.EMAIL_BACKEND),
+        'host': str(settings.EMAIL_HOST),
+        'port': str(settings.EMAIL_PORT),
+        'user': str(settings.EMAIL_HOST_USER),
+        'from_email': str(settings.DEFAULT_FROM_EMAIL),
+    }
     
     try:
         print("\n📧 Sending test email...")
@@ -25,31 +34,19 @@ def test_email(request):
             fail_silently=False
         )
         print(f"✅ Test email sent successfully! Result: {result}")
-        return Response({
+        return JsonResponse({
             'success': True,
             'message': 'Test email sent successfully',
             'result': result,
-            'config': {
-                'backend': settings.EMAIL_BACKEND,
-                'host': settings.EMAIL_HOST,
-                'port': settings.EMAIL_PORT,
-                'user': settings.EMAIL_HOST_USER,
-                'from_email': settings.DEFAULT_FROM_EMAIL,
-            }
+            'config': config_info
         })
     except Exception as e:
         print(f"❌ Test email failed: {e}")
         print(f"❌ Error type: {type(e).__name__}")
-        return Response({
+        return JsonResponse({
             'success': False,
             'message': 'Test email failed',
             'error': str(e),
             'error_type': type(e).__name__,
-            'config': {
-                'backend': settings.EMAIL_BACKEND,
-                'host': settings.EMAIL_HOST,
-                'port': settings.EMAIL_PORT,
-                'user': settings.EMAIL_HOST_USER,
-                'from_email': settings.DEFAULT_FROM_EMAIL,
-            }
+            'config': config_info
         }, status=500)
