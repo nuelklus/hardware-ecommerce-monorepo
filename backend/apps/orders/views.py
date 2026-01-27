@@ -76,17 +76,27 @@ class CreateOrderView(generics.CreateAPIView):
             signal.signal(signal.SIGALRM, timeout_handler)
             signal.alarm(10)  # 10 second timeout
             
-            send_mail(
+            # Get connection for debugging
+            from django.core.mail import get_connection
+            connection = get_connection()
+            
+            print(f"📧 SMTP connection details:")
+            print(f"   - Host: {connection.host}")
+            print(f"   - Port: {connection.port}")
+            print(f"   - Username: {connection.username}")
+            print(f"   - Use TLS: {connection.use_tls}")
+            
+            result = send_mail(
                 subject=customer_subject,
                 message='',  # HTML email, so plain text is empty
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[order.email],
                 html_message=customer_message,
-                fail_silently=True  # Don't raise exceptions
+                fail_silently=False  # Set to False to see actual SMTP responses
             )
             
             signal.alarm(0)  # Cancel timeout
-            print(f"✅ Customer email sent successfully")
+            print(f"✅ Customer email sent successfully. SMTP result: {result}")
             
         except TimeoutError as e:
             print(f"❌ SMTP connection timed out: {e}")
@@ -111,6 +121,8 @@ class CreateOrderView(generics.CreateAPIView):
         except Exception as e:
             signal.alarm(0)  # Cancel timeout
             print(f"❌ Failed to send customer email: {e}")
+            print(f"❌ Error type: {type(e).__name__}")
+            print(f"❌ Error details: {str(e)}")
             # Don't raise exception - continue with order creation
         
         # Email to admin
