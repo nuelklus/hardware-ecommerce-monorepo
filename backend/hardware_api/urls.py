@@ -20,6 +20,8 @@ def test_email_main(request):
     print(f"📧 Email backend: {settings.EMAIL_BACKEND}")
     print(f"📧 Email host: {settings.EMAIL_HOST}")
     print(f"📧 Email port: {settings.EMAIL_PORT}")
+    print(f"📧 Email use TLS: {settings.EMAIL_USE_TLS}")
+    print(f"📧 Email use SSL: {getattr(settings, 'EMAIL_USE_SSL', 'Not set')}")
     print(f"📧 Email user: {settings.EMAIL_HOST_USER}")
     print(f"📧 From email: {settings.DEFAULT_FROM_EMAIL}")
     
@@ -27,6 +29,8 @@ def test_email_main(request):
         'backend': str(settings.EMAIL_BACKEND),
         'host': str(settings.EMAIL_HOST),
         'port': str(settings.EMAIL_PORT),
+        'use_tls': str(getattr(settings, 'EMAIL_USE_TLS', 'Not set')),
+        'use_ssl': str(getattr(settings, 'EMAIL_USE_SSL', 'Not set')),
         'user': str(settings.EMAIL_HOST_USER),
         'from_email': str(settings.DEFAULT_FROM_EMAIL),
     }
