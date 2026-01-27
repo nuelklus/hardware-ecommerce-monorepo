@@ -123,7 +123,7 @@ TEMPLATES = [
     }
 ]
 
-# Email (production ready)
+# Email (production ready with fallback)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
@@ -132,6 +132,11 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@hardware-ecommerce.com')
 ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@hardware-ecommerce.com')
+
+# Fallback to console email if SMTP is not configured
+if not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
+    print("⚠️ SMTP credentials not configured, falling back to console email backend")
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Performance optimizations
 CONN_MAX_AGE = 600  # Database connection pooling

@@ -60,7 +60,8 @@ class CreateOrderView(generics.CreateAPIView):
             print(f"✅ Customer email sent successfully")
         except Exception as e:
             print(f"❌ Failed to send customer email: {e}")
-            raise
+            # Don't raise exception - continue with order creation
+            print("⚠️ Order created successfully but email failed")
         
         # Email to admin
         admin_subject = f"New Order Received - {order.order_number}"
@@ -83,7 +84,8 @@ class CreateOrderView(generics.CreateAPIView):
             print(f"✅ Admin email sent successfully")
         except Exception as e:
             print(f"❌ Failed to send admin email: {e}")
-            raise
+            # Don't raise exception - continue with order creation
+            print("⚠️ Order created successfully but admin email failed")
 
 
 class OrderDetailView(generics.RetrieveAPIView):
