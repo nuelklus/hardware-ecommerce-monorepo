@@ -37,6 +37,9 @@ class CreateOrderView(generics.CreateAPIView):
         print(f"📧 Starting email sending for order {order.order_number}")
         print(f"📧 Customer email: {order.email}")
         print(f"📧 Admin email: {settings.ADMIN_EMAIL}")
+        print(f"📧 Email configuration: HOST={settings.EMAIL_HOST}, PORT={settings.EMAIL_PORT}")
+        print(f"📧 Email user: {settings.EMAIL_HOST_USER}")
+        print(f"📧 From email: {settings.DEFAULT_FROM_EMAIL}")
         
         # Check if email is properly configured
         if not hasattr(settings, 'EMAIL_HOST_USER') or not settings.EMAIL_HOST_USER:
