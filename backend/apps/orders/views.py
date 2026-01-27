@@ -33,28 +33,27 @@ class CreateOrderView(generics.CreateAPIView):
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
     
     def send_order_emails(self, order):
-        """Send order confirmation emails to customer and admin"""
+        """Send order confirmation emails using Resend API"""
         print(f"📧 Starting email sending for order {order.order_number}")
         print(f"📧 Customer email: {order.email}")
         print(f"📧 Admin email: {settings.ADMIN_EMAIL}")
-        print(f"📧 Email configuration: HOST={settings.EMAIL_HOST}, PORT={settings.EMAIL_PORT}")
-        print(f"📧 Email user: {settings.EMAIL_HOST_USER}")
-        print(f"📧 From email: {settings.DEFAULT_FROM_EMAIL}")
+        print(f"📧 Using Resend API for email delivery")
         
-        # Check if email is properly configured
-        if not hasattr(settings, 'EMAIL_HOST_USER') or not settings.EMAIL_HOST_USER:
-            print("⚠️ Email not configured - skipping email sending")
-            print("⚠️ Please set EMAIL_HOST_USER and EMAIL_HOST_PASSWORD environment variables")
+        # Check if Resend API key is configured
+        if not hasattr(settings, 'RESEND_API_KEY') or not settings.RESEND_API_KEY:
+            print("⚠️ Resend API key not configured - falling back to console email")
+            self._send_console_emails(order)
             return
         
-        if not hasattr(settings, 'EMAIL_HOST_PASSWORD') or not settings.EMAIL_HOST_PASSWORD:
-            print("⚠️ Email password not configured - skipping email sending")
-            print("⚠️ Please set EMAIL_HOST_PASSWORD environment variable")
+        # Import Resend
+        try:
+            import resend
+            resend.api_key = settings.RESEND_API_KEY
+            print(f"✅ Resend API configured successfully")
+        except ImportError:
+            print("⚠️ Resend package not installed - falling back to console email")
+            self._send_console_emails(order)
             return
-        
-        # Import here to avoid circular imports
-        from django.core.mail import get_connection
-        from django.core.mail.backends.console import EmailBackend as ConsoleEmailBackend
         
         # Email to customer
         customer_subject = f"Order Confirmation - {order.order_number}"
@@ -66,69 +65,25 @@ class CreateOrderView(generics.CreateAPIView):
         
         print(f"📧 Sending customer email to {order.email}")
         try:
-            # Try to send with timeout protection
-            import signal
+            params = {
+                "from": settings.DEFAULT_FROM_EMAIL,
+                "to": [order.email],
+                "subject": customer_subject,
+                "html": customer_message,
+            }
             
-            def timeout_handler(signum, frame):
-                raise TimeoutError("SMTP connection timed out")
+            result = resend.Emails.send(params)
+            print(f"✅ Customer email sent successfully via Resend. ID: {result.get('id')}")
             
-            # Set timeout for SMTP connection
-            signal.signal(signal.SIGALRM, timeout_handler)
-            signal.alarm(10)  # 10 second timeout
-            
-            # Get connection for debugging
-            from django.core.mail import get_connection
-            connection = get_connection()
-            
-            print(f"📧 SMTP connection details:")
-            print(f"   - Host: {connection.host}")
-            print(f"   - Port: {connection.port}")
-            print(f"   - Username: {connection.username}")
-            print(f"   - Use TLS: {connection.use_tls}")
-            
-            result = send_mail(
-                subject=customer_subject,
-                message='',  # HTML email, so plain text is empty
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[order.email],
-                html_message=customer_message,
-                fail_silently=False  # Set to False to see actual SMTP responses
-            )
-            
-            signal.alarm(0)  # Cancel timeout
-            print(f"✅ Customer email sent successfully. SMTP result: {result}")
-            
-        except TimeoutError as e:
-            print(f"❌ SMTP connection timed out: {e}")
-            print("⚠️ Falling back to console email backend")
-            # Fallback to console email
-            try:
-                console_backend = ConsoleEmailBackend()
-                connection = console_backend.get_connection()
-                from django.core.mail import EmailMessage
-                email = EmailMessage(
-                    subject=customer_subject,
-                    body=customer_message,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[order.email],
-                )
-                email.content_subtype = 'html'
-                connection.send_messages([email])
-                print(f"✅ Customer email logged to console")
-            except Exception as fallback_error:
-                print(f"❌ Console email also failed: {fallback_error}")
-                
         except Exception as e:
-            signal.alarm(0)  # Cancel timeout
-            print(f"❌ Failed to send customer email: {e}")
+            print(f"❌ Failed to send customer email via Resend: {e}")
             print(f"❌ Error type: {type(e).__name__}")
-            print(f"❌ Error details: {str(e)}")
             # Don't raise exception - continue with order creation
         
-        # Add delay before sending admin email to prevent rate limiting
+        # Add delay before sending admin email
         import time
-        print("⏳ Waiting 2 seconds before sending admin email...")
-        time.sleep(2)
+        print("⏳ Waiting 1 second before sending admin email...")
+        time.sleep(1)
         
         # Email to admin
         admin_subject = f"New Order Received - {order.order_number}"
@@ -140,46 +95,60 @@ class CreateOrderView(generics.CreateAPIView):
         
         print(f"📧 Sending admin email to {settings.ADMIN_EMAIL}")
         try:
-            # Set timeout for SMTP connection
-            signal.signal(signal.SIGALRM, timeout_handler)
-            signal.alarm(10)  # 10 second timeout
+            params = {
+                "from": settings.DEFAULT_FROM_EMAIL,
+                "to": [settings.ADMIN_EMAIL],
+                "subject": admin_subject,
+                "html": admin_message,
+            }
             
-            send_mail(
-                subject=admin_subject,
-                message='',  # HTML email, so plain text is empty
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[settings.ADMIN_EMAIL],
-                html_message=admin_message,
-                fail_silently=True  # Don't raise exceptions
-            )
+            result = resend.Emails.send(params)
+            print(f"✅ Admin email sent successfully via Resend. ID: {result.get('id')}")
             
-            signal.alarm(0)  # Cancel timeout
-            print(f"✅ Admin email sent successfully")
-            
-        except TimeoutError as e:
-            print(f"❌ SMTP connection timed out: {e}")
-            print("⚠️ Falling back to console email backend")
-            # Fallback to console email
-            try:
-                console_backend = ConsoleEmailBackend()
-                connection = console_backend.get_connection()
-                from django.core.mail import EmailMessage
-                email = EmailMessage(
-                    subject=admin_subject,
-                    body=admin_message,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[settings.ADMIN_EMAIL],
-                )
-                email.content_subtype = 'html'
-                connection.send_messages([email])
-                print(f"✅ Admin email logged to console")
-            except Exception as fallback_error:
-                print(f"❌ Console email also failed: {fallback_error}")
-                
         except Exception as e:
-            signal.alarm(0)  # Cancel timeout
-            print(f"❌ Failed to send admin email: {e}")
+            print(f"❌ Failed to send admin email via Resend: {e}")
+            print(f"❌ Error type: {type(e).__name__}")
             # Don't raise exception - continue with order creation
+    
+    def _send_console_emails(self, order):
+        """Fallback method to send emails to console when Resend is not available"""
+        print("📧 Using console email fallback...")
+        
+        # Customer email
+        customer_subject = f"Order Confirmation - {order.order_number}"
+        customer_message = render_to_string('emails/order_confirmation.html', {
+            'order': order,
+            'customer_name': f"{order.first_name} {order.last_name}",
+            'is_admin': False
+        })
+        
+        print(f"\n{'='*50}")
+        print(f"📧 CUSTOMER EMAIL")
+        print(f"{'='*50}")
+        print(f"To: {order.email}")
+        print(f"Subject: {customer_subject}")
+        print(f"From: {settings.DEFAULT_FROM_EMAIL}")
+        print(f"\n{customer_message}")
+        print(f"{'='*50}")
+        
+        # Admin email
+        admin_subject = f"New Order Received - {order.order_number}"
+        admin_message = render_to_string('emails/order_confirmation.html', {
+            'order': order,
+            'customer_name': "Admin",
+            'is_admin': True
+        })
+        
+        print(f"\n{'='*50}")
+        print(f"📧 ADMIN EMAIL")
+        print(f"{'='*50}")
+        print(f"To: {settings.ADMIN_EMAIL}")
+        print(f"Subject: {admin_subject}")
+        print(f"From: {settings.DEFAULT_FROM_EMAIL}")
+        print(f"\n{admin_message}")
+        print(f"{'='*50}")
+        
+        print("✅ Console emails sent successfully")
 
 
 class OrderDetailView(generics.RetrieveAPIView):
