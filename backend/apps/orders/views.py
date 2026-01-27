@@ -125,6 +125,11 @@ class CreateOrderView(generics.CreateAPIView):
             print(f"❌ Error details: {str(e)}")
             # Don't raise exception - continue with order creation
         
+        # Add delay before sending admin email to prevent rate limiting
+        import time
+        print("⏳ Waiting 2 seconds before sending admin email...")
+        time.sleep(2)
+        
         # Email to admin
         admin_subject = f"New Order Received - {order.order_number}"
         admin_message = render_to_string('emails/order_confirmation.html', {
