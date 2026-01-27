@@ -34,20 +34,19 @@ class CreateOrderView(generics.CreateAPIView):
     
     def send_order_emails(self, order):
         """Send order confirmation emails to customer and admin"""
-        print(f"📧 Email sending temporarily disabled for order {order.order_number}")
-        print(f"📧 Order created successfully - emails will be enabled once SMTP is properly configured")
-        
-        # TODO: Re-enable email sending once SMTP environment variables are properly set
-        return
-        
-        # Email sending code below is disabled for now
-        """
+        print(f"📧 Starting email sending for order {order.order_number}")
         print(f"📧 Customer email: {order.email}")
         print(f"📧 Admin email: {settings.ADMIN_EMAIL}")
         
         # Check if email is properly configured
         if not hasattr(settings, 'EMAIL_HOST_USER') or not settings.EMAIL_HOST_USER:
             print("⚠️ Email not configured - skipping email sending")
+            print("⚠️ Please set EMAIL_HOST_USER and EMAIL_HOST_PASSWORD environment variables")
+            return
+        
+        if not hasattr(settings, 'EMAIL_HOST_PASSWORD') or not settings.EMAIL_HOST_PASSWORD:
+            print("⚠️ Email password not configured - skipping email sending")
+            print("⚠️ Please set EMAIL_HOST_PASSWORD environment variable")
             return
         
         # Email to customer
@@ -95,7 +94,6 @@ class CreateOrderView(generics.CreateAPIView):
         except Exception as e:
             print(f"❌ Failed to send admin email: {e}")
             # Don't raise exception - continue with order creation
-        """
 
 
 class OrderDetailView(generics.RetrieveAPIView):
