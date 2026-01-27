@@ -39,6 +39,11 @@ class CreateOrderView(generics.CreateAPIView):
         print(f"📧 Customer email: {order.email}")
         print(f"📧 Admin email: {settings.ADMIN_EMAIL}")
         
+        # Check if email is properly configured
+        if not hasattr(settings, 'EMAIL_HOST_USER') or not settings.EMAIL_HOST_USER:
+            print("⚠️ Email not configured - skipping email sending")
+            return
+        
         # Email to customer
         customer_subject = f"Order Confirmation - {order.order_number}"
         customer_message = render_to_string('emails/order_confirmation.html', {
@@ -55,13 +60,12 @@ class CreateOrderView(generics.CreateAPIView):
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[order.email],
                 html_message=customer_message,
-                fail_silently=False
+                fail_silently=True  # Don't raise exceptions
             )
             print(f"✅ Customer email sent successfully")
         except Exception as e:
             print(f"❌ Failed to send customer email: {e}")
             # Don't raise exception - continue with order creation
-            print("⚠️ Order created successfully but email failed")
         
         # Email to admin
         admin_subject = f"New Order Received - {order.order_number}"
@@ -79,13 +83,12 @@ class CreateOrderView(generics.CreateAPIView):
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[settings.ADMIN_EMAIL],
                 html_message=admin_message,
-                fail_silently=False
+                fail_silently=True  # Don't raise exceptions
             )
             print(f"✅ Admin email sent successfully")
         except Exception as e:
             print(f"❌ Failed to send admin email: {e}")
             # Don't raise exception - continue with order creation
-            print("⚠️ Order created successfully but admin email failed")
 
 
 class OrderDetailView(generics.RetrieveAPIView):
