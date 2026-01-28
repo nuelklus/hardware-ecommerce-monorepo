@@ -145,6 +145,8 @@ ALLOWED_HOSTS = [
     'testserver',  # For testing
     os.getenv('RENDER_EXTERNAL_HOSTNAME', ''),
     '.onrender.com',
+    'allshopsdepot.com',
+    'www.allshopsdepot.com',
 ]
 
 # CORS (production)
@@ -154,6 +156,15 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # For local development
     'http://localhost:3001',
     'https://your-custom-domain.com',
+    'https://allshopsdepot.com',
+    'https://www.allshopsdepot.com',
+]
+
+# CSRF Trusted Origins (for secure form submission)
+CSRF_TRUSTED_ORIGINS = [
+    'https://allshopsdepot.com',
+    'https://www.allshopsdepot.com',
+    'https://hardware-ecommerce-monorepo-2.onrender.com',
 ]
 
 # Remove development CORS settings
