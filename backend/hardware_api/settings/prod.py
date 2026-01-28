@@ -126,12 +126,12 @@ TEMPLATES = [
 # Email (using Resend API to bypass Render SMTP blocking)
 # Note: We use Resend Python SDK directly, not traditional SMTP
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Fallback to console
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@hardware-ecommerce.com')
+DEFAULT_FROM_EMAIL = 'onboarding@resend.dev'  # Use Resend's verified domain
 ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@hardware-ecommerce.com')
 
 # Resend configuration
 RESEND_API_KEY = 're_PNFLLBKF_6uwnyHsU9HeD4Z9jvN629pDj'
-RESEND_FROM_EMAIL = 'onboarding@resend.dev'  # Resend's default verified domain
+RESEND_FROM_EMAIL = 'onboarding@resend.dev'  # Resend's verified domain
 
 # Performance optimizations
 CONN_MAX_AGE = 600  # Database connection pooling
