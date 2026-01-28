@@ -64,16 +64,22 @@ class CreateOrderView(generics.CreateAPIView):
         })
         
         print(f"📧 Sending customer email to {order.email}")
+        # For Resend free tier, send customer emails to your verified address
+        # In production, verify a domain to send to any email
+        customer_email = order.email if hasattr(settings, 'RESEND_DOMAIN_VERIFIED') and settings.RESEND_DOMAIN_VERIFIED else settings.ADMIN_EMAIL
+        
         try:
             params = {
-                "from": settings.DEFAULT_FROM_EMAIL,
-                "to": [order.email],
+                "from": settings.RESEND_FROM_EMAIL,
+                "to": [customer_email],
                 "subject": customer_subject,
                 "html": customer_message,
             }
             
             result = resend.Emails.send(params)
             print(f"✅ Customer email sent successfully via Resend. ID: {result.get('id')}")
+            if customer_email != order.email:
+                print(f"⚠️ Note: Email sent to {customer_email} instead of {order.email} (Resend free tier limitation)")
             
         except Exception as e:
             print(f"❌ Failed to send customer email via Resend: {e}")
