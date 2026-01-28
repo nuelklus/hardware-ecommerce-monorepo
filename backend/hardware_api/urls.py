@@ -15,44 +15,66 @@ def health(request):
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
 def test_email_main(request):
-    """Main test email endpoint without authentication issues"""
+    """Main test email endpoint using Resend API"""
     print("📧 Testing email configuration (main endpoint)...")
-    print(f"📧 Email backend: {settings.EMAIL_BACKEND}")
-    print(f"📧 Email host: {settings.EMAIL_HOST}")
-    print(f"📧 Email port: {settings.EMAIL_PORT}")
-    print(f"📧 Email use TLS: {settings.EMAIL_USE_TLS}")
-    print(f"📧 Email use SSL: {getattr(settings, 'EMAIL_USE_SSL', 'Not set')}")
-    print(f"📧 Email user: {settings.EMAIL_HOST_USER}")
-    print(f"📧 From email: {settings.DEFAULT_FROM_EMAIL}")
+    print(f"📧 Using Resend API for email delivery")
+    
+    # Check if Resend API key is configured
+    if not hasattr(settings, 'RESEND_API_KEY') or not settings.RESEND_API_KEY:
+        print("⚠️ Resend API key not configured - falling back to console email")
+        return JsonResponse({
+            'success': False,
+            'message': 'Resend API key not configured',
+            'error': 'RESEND_API_KEY missing'
+        })
+    
+    # Import Resend
+    try:
+        import resend
+        resend.api_key = settings.RESEND_API_KEY
+        print(f"✅ Resend API configured successfully")
+    except ImportError:
+        print("⚠️ Resend package not installed - falling back to console email")
+        return JsonResponse({
+            'success': False,
+            'message': 'Resend package not installed',
+            'error': 'ImportError: resend package missing'
+        })
+    except Exception as e:
+        print(f"⚠️ Resend import failed: {e}")
+        return JsonResponse({
+            'success': False,
+            'message': 'Resend import failed',
+            'error': str(e)
+        })
     
     config_info = {
-        'backend': str(settings.EMAIL_BACKEND),
-        'host': str(settings.EMAIL_HOST),
-        'port': str(settings.EMAIL_PORT),
-        'use_tls': str(getattr(settings, 'EMAIL_USE_TLS', 'Not set')),
-        'use_ssl': str(getattr(settings, 'EMAIL_USE_SSL', 'Not set')),
-        'user': str(settings.EMAIL_HOST_USER),
-        'from_email': str(settings.DEFAULT_FROM_EMAIL),
+        'backend': 'Resend API',
+        'api_key': settings.RESEND_API_KEY[:10] + '...' if settings.RESEND_API_KEY else 'None',
+        'from_email': getattr(settings, 'RESEND_FROM_EMAIL', 'Not set'),
     }
     
     try:
-        print("\n📧 Sending test email...")
-        result = send_mail(
-            subject='Test Email from Hardware E-commerce',
-            message='This is a test email to verify SMTP configuration.',
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[settings.EMAIL_HOST_USER],  # Send to self
-            fail_silently=False
-        )
-        print(f"✅ Test email sent successfully! Result: {result}")
+        print("\n📧 Sending test email via Resend...")
+        params = {
+            "from": getattr(settings, 'RESEND_FROM_EMAIL', 'test@resend.dev'),
+            "to": ["nuelklus@gmail.com"],  # Test with your email
+            "subject": 'Test Email from Hardware E-commerce via Resend',
+            "html": '<h1>Test Email</h1><p>This is a test email from your Hardware E-commerce application using Resend API.</p>',
+        }
+        
+        result = resend.Emails.send(params)
+        print(f"✅ Test email sent successfully via Resend. ID: {result.get('id')}")
+        
         return JsonResponse({
             'success': True,
-            'message': 'Test email sent successfully',
+            'message': 'Test email sent successfully via Resend',
             'result': result,
             'config': config_info
         })
+        
     except Exception as e:
-        print(f"❌ Test email failed: {e}")
+        print(f"❌ Failed to send test email via Resend: {e}")
         print(f"❌ Error type: {type(e).__name__}")
         return JsonResponse({
             'success': False,
