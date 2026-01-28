@@ -10,7 +10,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_API_URL
-        value: https://your-backend-app.onrender.com
+        value: https://hardware-ecommerce-monorepo.onrender.com/api
       - key: NEXT_PUBLIC_SUPABASE_URL
         value: https://your-project.supabase.co
       - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
